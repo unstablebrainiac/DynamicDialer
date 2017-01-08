@@ -1,7 +1,6 @@
 package com.tobedecided.dynamicdialer;
 
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -41,7 +40,7 @@ public class LogsFragment extends Fragment {
         super.onStart();
         logList = new ArrayList<>();
         logsRecyclerView = (RecyclerView) getActivity().findViewById(R.id.logs_list);
-        logsAdapter = new LogsAdapter(logList, new ItemClickListener() {
+        logsAdapter = new LogsAdapter(logList, getActivity(), new ItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 //TODO: Handle log clicks
