@@ -1,15 +1,22 @@
 package com.tobedecided.dynamicdialer;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
+import static com.tobedecided.dynamicdialer.LogsAdapter.MY_PERMISSIONS_CALL_PHONE;
 import static com.tobedecided.dynamicdialer.R.id.gridview;
 
 
@@ -69,7 +76,16 @@ public class DialpadActivity extends MainActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fab.setImageDrawable(ContextCompat.getDrawable(DialpadActivity.this, R.drawable.ic_call_white_48dp));
+                TextView textView = (TextView) findViewById(R.id.textView);
+                String number = textView.getText().toString();
+                if (number != null) {
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" + number));
+                    while (ActivityCompat.checkSelfPermission(DialpadActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(DialpadActivity.this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_CALL_PHONE);
+                    }
+                    DialpadActivity.this.startActivity(intent);
+                }
             }
         });
         GridView gridView = (GridView) findViewById(gridview);
@@ -84,6 +100,7 @@ public class DialpadActivity extends MainActivity {
                 if (position == 10) {
                     dialed.append("" + 0);
                 }
+                view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +111,15 @@ public class DialpadActivity extends MainActivity {
                     s = s.substring(0, s.length() - 1);
                     dialed.setText(s);
                 }
+                view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+            }
+        });
+        back.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                dialed.setText("");
+                v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                return true;
             }
         });
 

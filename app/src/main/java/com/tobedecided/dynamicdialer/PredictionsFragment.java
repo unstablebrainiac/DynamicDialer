@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,8 +20,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
 
 
 /**
@@ -75,7 +74,8 @@ public class PredictionsFragment extends Fragment implements Callback<GsonModels
                 break;
         }
 
-        String body = "{\"Inputs\": {\"input1\": {\"ColumnNames\": [\"Name\",\"Weekday\",\"Time\",\"Type\"],\"Values\": [[\" \",\"" + day + "\",\"" + calendar.HOUR_OF_DAY + "\",\"OUTGOING\"],]}},\"GlobalParameters\": {}}";
+//        String body = "{\"Inputs\": {\"input1\": {\"ColumnNames\": [\"Name\",\"Weekday\",\"Time\",\"Type\"],\"Values\": [[\" \",\"" + day + "\",\"" + calendar.HOUR_OF_DAY + "\",\"OUTGOING\"],]}},\"GlobalParameters\": {}}";
+        String body = "{\"Inputs\": {\"input1\": {\"ColumnNames\": [\"Name\",\"Weekday\",\"Time\",\"Type\",\"Number\",\"Name_Number\"],\"Values\": [[\" \"," + day + "," + calendar.HOUR_OF_DAY + ",\"OUTGOING\",\"0\",\" \"]]}},\"GlobalParameters\": {}}";
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), body);
         RetrofitInterface retrofitInterface = ServiceGenerator.createService(RetrofitInterface.class);
         retrofitInterface.getPredictions("2.0", "true", requestBody).enqueue(this);
@@ -91,7 +91,7 @@ public class PredictionsFragment extends Fragment implements Callback<GsonModels
             GsonModels.Value value = output1.getValue();
             List<String> columnNames = value.getColumnNames();
             List<String> values = value.getValues().get(0);
-            for (int i = 0 ; i < 4 ; i++) {
+            for (int i = 0 ; i < 6 ; i++) {
                 columnNames.remove(0);
                 values.remove(0);
             }
@@ -99,10 +99,10 @@ public class PredictionsFragment extends Fragment implements Callback<GsonModels
             values.remove(values.size() - 1);
 
             for (int i = 0 ; i < columnNames.size() ; i++) {
-                predictionList.add(new Prediction(columnNames.get(i).substring(32, columnNames.get(i).length() - 1), Double.parseDouble(values.get(i))));
+                predictionList.add(new Prediction(columnNames.get(i).substring(32, columnNames.get(i).length() - 11), columnNames.get(i).substring(columnNames.get(i).length() - 11, columnNames.get(i).length() - 1), Double.parseDouble(values.get(i))));
             }
             Collections.sort(predictionList, Prediction.Comparators.PROBABILITY);
-            predictionsAdapter = new PredictionsAdapter(predictionList, new ItemClickListener() {
+            predictionsAdapter = new PredictionsAdapter(predictionList, getActivity(), new ItemClickListener() {
                 @Override
                 public void onItemClick(View v, int position) {
                     //TODO: Handle Prediction clicks
@@ -118,6 +118,6 @@ public class PredictionsFragment extends Fragment implements Callback<GsonModels
 
     @Override
     public void onFailure(Call<GsonModels.Response> call, Throwable t) {
-        android.util.Log.d(TAG, "onFailure: " + t.toString());
+        Toast.makeText(getContext(), "Predictions could not be loaded. Please check your internet connection", Toast.LENGTH_LONG).show();
     }
 }

@@ -1,6 +1,7 @@
 package com.tobedecided.dynamicdialer;
 
-import android.location.Location;
+
+import java.util.Date;
 
 /**
  * Created by sajalnarang on 2/12/16.
@@ -10,17 +11,17 @@ public class Log {
     private String name;
     private String number;
     private String duration;
-    private String location;
+    private Date dayTime;
     private String type;
 
     public Log() {
     }
 
-    public Log(String name, String number, String duration, String location, String type) {
+    public Log(String name, String number, String duration, Date dayTime, String type) {
         this.name = name;
         this.number = number;
         this.duration = duration;
-        this.location = location;
+        this.dayTime = dayTime;
         this.type = type;
     }
 
@@ -48,12 +49,12 @@ public class Log {
         this.duration = duration;
     }
 
-    public String getLocation() {
-        return location;
+    public Date getDayTime() {
+        return dayTime;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setDayTime(Date dayTime) {
+        this.dayTime = dayTime;
     }
 
     public String getType() {

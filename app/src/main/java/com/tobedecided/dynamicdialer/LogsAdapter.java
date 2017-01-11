@@ -22,7 +22,7 @@ import java.util.List;
 
 public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.LogsHolder> {
 
-    private static final int MY_PERMISSIONS_CALL_PHONE = 1;
+    public static final int MY_PERMISSIONS_CALL_PHONE = 1;
     private List<Log> logList;
     private Context context;
     private ItemClickListener itemClickListener;

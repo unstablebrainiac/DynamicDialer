@@ -8,10 +8,12 @@ import java.util.Comparator;
 
 public class Prediction implements Comparable<Prediction> {
     private String name;
+    private String number;
     private double probability;
 
-    public Prediction(String name, double probability) {
+    public Prediction(String name, String number, double probability) {
         this.name = name;
+        this.number = number;
         this.probability = probability;
     }
 
@@ -21,6 +23,14 @@ public class Prediction implements Comparable<Prediction> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public double getProbability() {
