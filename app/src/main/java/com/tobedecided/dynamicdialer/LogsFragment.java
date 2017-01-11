@@ -36,36 +36,10 @@ public class LogsFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_logs, container, false);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        logList = new ArrayList<>();
-        logList = getCallDetails(getContext());
-        logsRecyclerView = (RecyclerView) getActivity().findViewById(R.id.logs_list);
-        logsAdapter = new LogsAdapter(logList, getActivity(), new ItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                //TODO: Handle log clicks
-            }
-        });
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        logsRecyclerView.setLayoutManager(layoutManager);
-        logsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        logsRecyclerView.setAdapter(logsAdapter);
-    }
-
     private static List<Log> getCallDetails(Context context) {
         List<Log> logs = new ArrayList<>();
         while (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.READ_CALL_LOG}, MY_PERMISSIONS_READ_CALL_LOG);
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_CALL_LOG}, MY_PERMISSIONS_READ_CALL_LOG);
         }
         Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
         int name = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
@@ -100,5 +74,30 @@ public class LogsFragment extends Fragment {
         }
         cursor.close();
         return logs;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_logs, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        logList = new ArrayList<>();
+        logList = getCallDetails(getContext());
+        logsRecyclerView = (RecyclerView) getActivity().findViewById(R.id.logs_list);
+        logsAdapter = new LogsAdapter(logList, getActivity(), new ItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                //TODO: Handle log clicks
+            }
+        });
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        logsRecyclerView.setLayoutManager(layoutManager);
+        logsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        logsRecyclerView.setAdapter(logsAdapter);
     }
 }

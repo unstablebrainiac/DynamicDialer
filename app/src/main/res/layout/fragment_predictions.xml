@@ -5,8 +5,8 @@
     tools:context="com.tobedecided.dynamicdialer.PredictionsFragment">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/predictions_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/predictions_list" />
+        android:layout_height="wrap_content" />
 
 </FrameLayout>

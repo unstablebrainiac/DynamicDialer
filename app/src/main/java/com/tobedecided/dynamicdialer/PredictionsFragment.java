@@ -25,7 +25,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PredictionsFragment extends Fragment implements Callback<GsonModels.Response>{
+public class PredictionsFragment extends Fragment implements Callback<GsonModels.Response> {
 
     private List<Prediction> predictionList;
     private RecyclerView predictionsRecyclerView;
@@ -91,14 +91,14 @@ public class PredictionsFragment extends Fragment implements Callback<GsonModels
             GsonModels.Value value = output1.getValue();
             List<String> columnNames = value.getColumnNames();
             List<String> values = value.getValues().get(0);
-            for (int i = 0 ; i < 6 ; i++) {
+            for (int i = 0; i < 6; i++) {
                 columnNames.remove(0);
                 values.remove(0);
             }
             columnNames.remove(columnNames.size() - 1);
             values.remove(values.size() - 1);
 
-            for (int i = 0 ; i < columnNames.size() ; i++) {
+            for (int i = 0; i < columnNames.size(); i++) {
                 predictionList.add(new Prediction(columnNames.get(i).substring(32, columnNames.get(i).length() - 11), columnNames.get(i).substring(columnNames.get(i).length() - 11, columnNames.get(i).length() - 1), Double.parseDouble(values.get(i))));
             }
             Collections.sort(predictionList, Prediction.Comparators.PROBABILITY);
@@ -108,7 +108,7 @@ public class PredictionsFragment extends Fragment implements Callback<GsonModels
                     //TODO: Handle Prediction clicks
                 }
             });
-            RecyclerView.LayoutManager layoutManager =  new LinearLayoutManager(getContext());
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
             predictionsRecyclerView = (RecyclerView) getActivity().findViewById(R.id.predictions_list);
             predictionsRecyclerView.setLayoutManager(layoutManager);
             predictionsRecyclerView.setItemAnimator(new DefaultItemAnimator());

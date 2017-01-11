@@ -16,7 +16,7 @@ public class GridViewAdapter extends BaseAdapter {
 
 
     // 1
-    public GridViewAdapter(Context context, int[] digits,String[] alphanum) {
+    public GridViewAdapter(Context context, int[] digits, String[] alphanum) {
         this.mContext = context;
         this.digits = digits;
         this.alphanum = alphanum;
@@ -44,28 +44,25 @@ public class GridViewAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        final String alphanumf = alphanum[(position+1)%12];
-        if(convertView==null){
+        final String alphanumf = alphanum[(position + 1) % 12];
+        if (convertView == null) {
             final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
             convertView = layoutInflater.inflate(R.layout.digit_layout, null);
         }
 
-        final TextView nameTextView = (TextView)convertView.findViewById(R.id.number);
-        final TextView alphanumText = (TextView)convertView.findViewById(R.id.alpha_num);
+        final TextView nameTextView = (TextView) convertView.findViewById(R.id.number);
+        final TextView alphanumText = (TextView) convertView.findViewById(R.id.alpha_num);
 
 
-        if(position<9) {
-            nameTextView.setText("" + (position+1));
+        if (position < 9) {
+            nameTextView.setText("" + (position + 1));
             alphanumText.setText(alphanumf);
-        }
-        else if(position == 9){
+        } else if (position == 9) {
             nameTextView.setText("*");
-        }
-        else if(position == 10){
+        } else if (position == 10) {
             nameTextView.setText("0");
             alphanumText.setText(" +");
-        }
-        else if(position == 11){
+        } else if (position == 11) {
             nameTextView.setText("#");
         }
 

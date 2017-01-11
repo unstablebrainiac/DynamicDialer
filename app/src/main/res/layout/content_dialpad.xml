@@ -28,13 +28,13 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="32sp"
-        android:focusableInTouchMode="false"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="170dp" />
+        android:layout_marginTop="170dp"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"
+        android:textSize="32sp" />
 
     <ImageButton
         android:id="@+id/imageButton"
@@ -43,8 +43,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/textView"
-        android:backgroundTint="#FAFAFA"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:backgroundTint="#FAFAFA"
         android:tint="#757575"
         app:srcCompat="@drawable/ic_backspace_black_24dp" />
 
