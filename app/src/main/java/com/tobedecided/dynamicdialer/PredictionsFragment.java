@@ -41,7 +41,8 @@ public class PredictionsFragment extends Fragment implements Callback<GsonModels
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_predictions, container, false);
+        View inflatedView = inflater.inflate(R.layout.fragment_predictions, container, false);
+        return inflatedView;
     }
 
     @Override

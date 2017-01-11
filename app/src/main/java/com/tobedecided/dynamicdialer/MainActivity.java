@@ -1,6 +1,5 @@
 package com.tobedecided.dynamicdialer;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent((Context)MainActivity.this, DialpadActivity.class);
+                Intent intent = new Intent(MainActivity.this, DialpadActivity.class);
                 startActivity(intent);
 
             }
