@@ -81,7 +81,7 @@ public class DialpadActivity extends MainActivity {
                 if (number != null) {
                     Intent intent = new Intent(Intent.ACTION_CALL);
                     intent.setData(Uri.parse("tel:" + number));
-                    while (ActivityCompat.checkSelfPermission(DialpadActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(DialpadActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(DialpadActivity.this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_CALL_PHONE);
                     }
                     DialpadActivity.this.startActivity(intent);

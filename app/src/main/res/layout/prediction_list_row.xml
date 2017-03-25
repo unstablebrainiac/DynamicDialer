@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/profile_photo"
     android:layout_width="match_parent"
     android:layout_height="160dp"
-    android:background="@android:color/holo_blue_bright"
     android:layout_margin="1dp"
-    android:orientation="vertical">
+    android:background="@android:color/holo_red_dark">
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="4dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="8dp"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/number"
+        android:id="@+id/letter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        android:textSize="80sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/contact_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" />
-</LinearLayout>
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="4dp"
+        android:src="@drawable/ic_more_vert_white_24dp"
+        android:contentDescription="Contact Details" />
+</RelativeLayout>

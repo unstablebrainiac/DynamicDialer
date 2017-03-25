@@ -84,7 +84,8 @@ public class PredictionsFragment extends Fragment {
                     GsonModels.BigMLPredictionsResponse bigMLPredictionsResponse = response.body();
                     List<List<String>> probabilities = bigMLPredictionsResponse.getProbabilities();
                     for (int i = 0; i < probabilities.size(); i++) {
-                        predictionList.add(new Prediction(getContactName(getContext(), probabilities.get(i).get(0)), probabilities.get(i).get(0), Double.parseDouble(probabilities.get(i).get(1))));
+                        if (!(getContactName(getContext(), probabilities.get(i).get(0)) == null) && !getContactName(getContext(), probabilities.get(i).get(0)).isEmpty())
+                            predictionList.add(new Prediction(getContactIDFromNumber(probabilities.get(i).get(1), getContext()), getContactName(getContext(), probabilities.get(i).get(0)), probabilities.get(i).get(0), Double.parseDouble(probabilities.get(i).get(1))));
                     }
                     Collections.sort(predictionList, Prediction.Comparators.PROBABILITY);
                     predictionsAdapter = new PredictionsAdapter(predictionList, getActivity(), new ItemClickListener() {
@@ -92,7 +93,7 @@ public class PredictionsFragment extends Fragment {
                         public void onItemClick(View v, int position) {
                             Intent intent = new Intent(Intent.ACTION_CALL);
                             intent.setData(Uri.parse("tel:" + predictionList.get(position).getNumber()));
-                            while (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, LogsAdapter.MY_PERMISSIONS_CALL_PHONE);
                             }
                             startActivity(intent);
@@ -113,15 +114,45 @@ public class PredictionsFragment extends Fragment {
         });
     }
 
+    public static long getContactIDFromNumber(String contactNumber, Context context) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(contactNumber));
+        Cursor cursor = context.getContentResolver().query(uri,
+                new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID },
+                null, null, null);
+
+        String contactId = "";
+
+        if (cursor.moveToFirst()) {
+            do {
+                contactId = cursor.getString(cursor
+                        .getColumnIndex(ContactsContract.PhoneLookup._ID));
+            } while (cursor.moveToNext());
+        }
+        return contactId.equals("") ? 0 : Long.parseLong(contactId);
+    }
+
+
     public static String getContactName(Context context, String phoneNumber) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_READ_CONTACTS);
         }
         ContentResolver cr = context.getContentResolver();
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        String projection[] = new String[] {ContactsContract.PhoneLookup.DISPLAY_NAME,ContactsContract.PhoneLookup._ID};
+        Cursor cursor =
+                cr.query(
+                        uri,
+                        projection,
+                        null,
+                        null,
+                        null);
+
         if (cursor == null) {
-            return null;
+            while(cursor.moveToNext()){
+                String contactName = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                String contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
+            }
         }
         String contactName = null;
         if(cursor.moveToFirst()) {

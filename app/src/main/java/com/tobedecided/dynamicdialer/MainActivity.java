@@ -1,20 +1,20 @@
 package com.tobedecided.dynamicdialer;
 
+import android.Manifest;
 import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,6 +34,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int MY_PERMISSIONS_READ_CALL_LOG = 1;
+    private static final int MY_PERMISSIONS_READ_CONTACTS = 2;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -61,7 +62,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(intent);
             }
         });
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG}, MY_PERMISSIONS_READ_CALL_LOG);
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_READ_CONTACTS);
+        }
         getLoaderManager().initLoader(URL_LOADER, null, MainActivity.this);
     }
 
@@ -119,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         int type = data.getColumnIndex(CallLog.Calls.TYPE);
         int date = data.getColumnIndex(CallLog.Calls.DATE);
         int duration = data.getColumnIndex(CallLog.Calls.DURATION);
-        int contact_id = data.getColumnIndex(CallLog.Calls.PHONE_ACCOUNT_ID);
         StringBuilder sb = new StringBuilder();
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -132,10 +137,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             String callDate = data.getString(date);
             Date callDayTime = new Date(Long.valueOf(callDate));
             String callDuration = data.getString(duration);
-            String contactID = data.getString(contact_id);
             String dir = null;
-
-            Bitmap contactPhoto;
 
             SimpleDateFormat hourDateFormat = new SimpleDateFormat("HH");
             String time = hourDateFormat.format(callDayTime);
@@ -181,37 +183,33 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     dir = "Missed";
                     break;
             }
-            sb.append(contactName + "," + phNumber + "," + day + "," + time + "\\n");
+            sb.append(getContactIDFromNumber(phNumber, this) + "," + contactName + "," + phNumber + "," + day + "," + time + "\\n");
         }
         data.close();
         sb.append("\"}");
         sendLogs(sb.toString());
     }
 
-    @Override
-    public void onLoaderReset(android.content.Loader<Cursor> loader) {
+    public static long getContactIDFromNumber(String contactNumber, Context context) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(contactNumber));
+        Cursor cursor = context.getContentResolver().query(uri,
+                new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID },
+                null, null, null);
 
+        String contactId = "";
+
+        if (cursor.moveToFirst()) {
+            do {
+                contactId = cursor.getString(cursor
+                        .getColumnIndex(ContactsContract.PhoneLookup._ID));
+            } while (cursor.moveToNext());
+        }
+        return contactId.equals("") ? 0 : Long.parseLong(contactId);
     }
 
-    public Bitmap openPhoto(long contactId) {
-        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
-        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-        Cursor cursor = getContentResolver().query(photoUri,
-                new String[] {ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
-        if (cursor == null) {
-            return null;
-        }
-        try {
-            if (cursor.moveToFirst()) {
-                byte[] data = cursor.getBlob(0);
-                if (data != null) {
-                    return BitmapFactory.decodeStream(new ByteArrayInputStream(data));
-                }
-            }
-        } finally {
-            cursor.close();
-        }
-        return null;
+    @Override
+    public void onLoaderReset(android.content.Loader<Cursor> loader) {
 
     }
 

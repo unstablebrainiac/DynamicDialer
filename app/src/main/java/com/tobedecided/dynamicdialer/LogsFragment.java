@@ -38,7 +38,7 @@ public class LogsFragment extends Fragment {
 
     private static List<Log> getCallDetails(Context context) {
         List<Log> logs = new ArrayList<>();
-        while (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_CALL_LOG}, MY_PERMISSIONS_READ_CALL_LOG);
         }
         Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");

@@ -1,13 +1,27 @@
 package com.tobedecided.dynamicdialer;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by sajalnarang on 8/1/17.
@@ -22,6 +36,19 @@ public class PredictionsAdapter extends RecyclerView.Adapter<PredictionsAdapter.
         this.predictionList = predictionList;
         this.context = context;
         this.itemClickListener = itemClickListener;
+    }
+
+    public static Bitmap getContactBitmapFromURI(Context context, Uri uri) {
+        InputStream input = null;
+        try {
+            input = context.getContentResolver().openInputStream(uri);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+        if (input == null) {
+            return null;
+        }
+        return BitmapFactory.decodeStream(input);
     }
 
     @Override
@@ -41,7 +68,36 @@ public class PredictionsAdapter extends RecyclerView.Adapter<PredictionsAdapter.
     public void onBindViewHolder(PredictionsHolder holder, int position) {
         final Prediction selectedPrediction = predictionList.get(position);
         holder.nameTv.setText(selectedPrediction.getName());
-        holder.numberTv.setText(selectedPrediction.getNumber());
+        Bitmap bitmap = openPhoto(selectedPrediction.getContact_id());
+        List<String> colorList = new ArrayList<>();
+        colorList.add("#757575");
+        colorList.add("#9C27B0");
+        colorList.add("#EF6C00");
+        colorList.add("#039BE5");
+        colorList.add("#009688");
+        colorList.add("#FFA005");
+        colorList.add("#BB83A6");
+        colorList.add("#FFEB3B");
+        Random r = new Random();
+        int i = r.nextInt(colorList.size() - 1);
+        holder.photoRl.setBackgroundColor(Color.parseColor(colorList.get(i)));
+        if (bitmap != null) {
+            BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
+            holder.photoRl.setBackgroundDrawable(bitmapDrawable);
+        } else {
+            char c = selectedPrediction.getName().charAt(0);
+            holder.letterTv.setText("" + c);
+        }
+        holder.contactDetailsIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(selectedPrediction.getContact_id()));
+                Intent intent = new Intent(Intent.ACTION_VIEW, contactUri);
+                if (intent.resolveActivity(context.getPackageManager()) != null) {
+                    context.startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -49,14 +105,25 @@ public class PredictionsAdapter extends RecyclerView.Adapter<PredictionsAdapter.
         return predictionList.size();
     }
 
+    public Bitmap openPhoto(String contactId) {
+        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
+        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+
+        return getContactBitmapFromURI(context, photoUri);
+    }
+
     public class PredictionsHolder extends RecyclerView.ViewHolder {
         private TextView nameTv;
-        private TextView numberTv;
+        private TextView letterTv;
+        private ImageView contactDetailsIv;
+        private RelativeLayout photoRl;
 
         public PredictionsHolder(View itemView) {
             super(itemView);
             nameTv = (TextView) itemView.findViewById(R.id.name);
-            numberTv = (TextView) itemView.findViewById(R.id.number);
+            letterTv = (TextView) itemView.findViewById(R.id.letter);
+            contactDetailsIv = (ImageView) itemView.findViewById(R.id.contact_details);
+            photoRl = (RelativeLayout) itemView.findViewById(R.id.profile_photo);
         }
     }
 }

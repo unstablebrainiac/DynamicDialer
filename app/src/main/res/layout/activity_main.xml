@@ -42,7 +42,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:backgroundTint="@color/colorDialpad"
+        android:elevation="16dp"
+        android:background="@color/colorDialpad"
+        android:tint="@color/colorDialpad"
         app:srcCompat="@drawable/ic_dialpad_white_48dp" />
 
 </android.support.design.widget.CoordinatorLayout>

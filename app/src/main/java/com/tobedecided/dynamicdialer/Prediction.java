@@ -7,14 +7,24 @@ import java.util.Comparator;
  */
 
 public class Prediction implements Comparable<Prediction> {
+    private String contact_id;
     private String name;
     private String number;
     private double probability;
 
-    public Prediction(String name, String number, double probability) {
+    public Prediction(long contact_id, String name, String number, double probability) {
+        this.contact_id = String.valueOf(contact_id);
         this.name = name;
         this.number = number;
         this.probability = probability;
+    }
+
+    public String getContact_id() {
+        return contact_id;
+    }
+
+    public void setContact_id(String contact_id) {
+        this.contact_id = contact_id;
     }
 
     public String getName() {
