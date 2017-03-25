@@ -1,6 +1,7 @@
 package com.tobedecided.dynamicdialer;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -10,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
 
-    private static final String BASE_URL = "https://asiasoutheast.services.azureml.net/workspaces/d7bba9989b63439bb7e41496dc93519f/services/01c092065438468fafd44df5f8650b60/";
+    private static final String BASE_URL = "https://bigml.io/dev/";
 
     private static OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 
@@ -21,7 +22,9 @@ public class ServiceGenerator {
     private static Retrofit retrofit;
 
     public static <S> S createService(Class<S> serviceClass) {
-        retrofit = retrofitBuilder.client(clientBuilder.build()).build();
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        retrofit = retrofitBuilder.client(clientBuilder.addInterceptor(httpLoggingInterceptor).build()).build();
         return retrofit.create(serviceClass);
     }
 
