@@ -18,7 +18,25 @@ public interface RetrofitInterface {
 //                                             @Query("details") String details,
 //                                             @Body RequestBody body);
     @POST("prediction")
-    Call<GsonModels.BigMLResponse> getPredictions(@Header("Content-Type") String content_type,
+    Call<GsonModels.BigMLPredictionsResponse> getPredictions(@Header("Content-Type") String content_type,
+                                                             @Query("username") String username,
+                                                             @Query("api_key") String api_key,
+                                                             @Body RequestBody body);
+
+    @POST("source")
+    Call<GsonModels.BigMLSourceResponse> sendSource(@Header("Content-Type") String content_type,
+                                                    @Query("username") String username,
+                                                    @Query("api_key") String api_key,
+                                                    @Body RequestBody body);
+
+    @POST("dataset")
+    Call<GsonModels.BigMLDatasetResponse> sendDataset(@Header("Content-Type") String content_type,
+                                                      @Query("username") String username,
+                                                      @Query("api_key") String api_key,
+                                                      @Body RequestBody body);
+
+    @POST("model")
+    Call<GsonModels.BigMLModelResponse> sendModel(@Header("Content-Type") String content_type,
                                                   @Query("username") String username,
                                                   @Query("api_key") String api_key,
                                                   @Body RequestBody body);

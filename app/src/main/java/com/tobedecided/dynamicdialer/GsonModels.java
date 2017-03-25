@@ -111,7 +111,7 @@ public class GsonModels {
         }
     }
 
-    public class BigMLResponse {
+    public class BigMLPredictionsResponse {
         @SerializedName("boosted_ensemble")
         @Expose
         private Boolean boostedEnsemble;
@@ -242,7 +242,7 @@ public class GsonModels {
         @Expose
         private String updated;
 
-        public BigMLResponse(Boolean boostedEnsemble, Integer category, Integer code, Double confidence, Object configuration, Boolean configurationStatus, String created, Double credits, String dataset, Boolean datasetStatus, String description, Boolean dev, Fields fields, Importance importance, InputData inputData, String locale, Integer missingStrategy, String model, Boolean modelStatus, Integer modelType, String name, Integer numberOfModels, String objectiveField, String objectiveFieldName, List<String> objectiveFields, String output, Prediction prediction, PredictionPath predictionPath, Boolean _private, List<List<String>> probabilities, Double probability, Object project, String queryString, String resource, Boolean shared, String source, Boolean sourceStatus, Status status, Boolean subscription, List<Object> tags, String task, Integer tlp, String updated) {
+        public BigMLPredictionsResponse(Boolean boostedEnsemble, Integer category, Integer code, Double confidence, Object configuration, Boolean configurationStatus, String created, Double credits, String dataset, Boolean datasetStatus, String description, Boolean dev, Fields fields, Importance importance, InputData inputData, String locale, Integer missingStrategy, String model, Boolean modelStatus, Integer modelType, String name, Integer numberOfModels, String objectiveField, String objectiveFieldName, List<String> objectiveFields, String output, Prediction prediction, PredictionPath predictionPath, Boolean _private, List<List<String>> probabilities, Double probability, Object project, String queryString, String resource, Boolean shared, String source, Boolean sourceStatus, Status status, Boolean subscription, List<Object> tags, String task, Integer tlp, String updated) {
             this.boostedEnsemble = boostedEnsemble;
             this.category = category;
             this.code = code;
@@ -1230,6 +1230,54 @@ public class GsonModels {
 
         public void setPreferred(Boolean preferred) {
             this.preferred = preferred;
+        }
+    }
+
+    public class BigMLSourceResponse {
+        private String resource;
+
+        public BigMLSourceResponse(String resource) {
+            this.resource = resource;
+        }
+
+        public String getResource() {
+            return resource;
+        }
+
+        public void setResource(String resource) {
+            this.resource = resource;
+        }
+    }
+
+    public class BigMLDatasetResponse {
+        private String resource;
+
+        public BigMLDatasetResponse(String resource) {
+            this.resource = resource;
+        }
+
+        public String getResource() {
+            return resource;
+        }
+
+        public void setResource(String resource) {
+            this.resource = resource;
+        }
+    }
+
+    public class BigMLModelResponse {
+        private String resource;
+
+        public BigMLModelResponse(String resource) {
+            this.resource = resource;
+        }
+
+        public String getResource() {
+            return resource;
+        }
+
+        public void setResource(String resource) {
+            this.resource = resource;
         }
     }
 }
