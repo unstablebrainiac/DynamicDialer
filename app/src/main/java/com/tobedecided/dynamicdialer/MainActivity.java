@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private static final int URL_LOADER = 1;
+    public static final int URL_LOADER = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,7 +187,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         data.close();
         sb.append("\"}");
-        sendLogs(sb.toString());
+
+        SharedPreferences sharedPreferences = getSharedPreferences("DynamicDialer", Context.MODE_PRIVATE);
+        sendLogs(sb.toString(), sharedPreferences);
     }
 
     public static long getContactIDFromNumber(String contactNumber, Context context) {
@@ -213,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    public void sendLogs(String body) {
+    public static void sendLogs(String body, final SharedPreferences sharedPreferences) {
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), body);
         RetrofitInterface retrofitInterface = ServiceGenerator.createService(RetrofitInterface.class);
         retrofitInterface.sendSource("application/json", "bhavesh2109", "b5265ab5defd322e797052263c4f04e1bcb53d42", requestBody).enqueue(new Callback<GsonModels.BigMLSourceResponse>() {
@@ -241,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                         if (response.isSuccessful()) {
                                             GsonModels.BigMLModelResponse bigMLModelResponse = response.body();
                                             String resource2 = bigMLModelResponse.getResource();
-                                            SharedPreferences sharedPreferences = getSharedPreferences("DynamicDialer", Context.MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
                                             editor.putString("resource2", resource2);
                                             editor.apply();

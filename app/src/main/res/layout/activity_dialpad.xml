@@ -27,7 +27,7 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|center"
         android:layout_margin="@dimen/fab_margin"
         android:backgroundTint="#00CC00"
         android:src="@drawable/ic_call_white_48dp" />

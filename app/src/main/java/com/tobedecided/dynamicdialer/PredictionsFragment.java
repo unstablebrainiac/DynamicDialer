@@ -55,6 +55,116 @@ public class PredictionsFragment extends Fragment {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("DynamicDialer", Context.MODE_PRIVATE);
         String resource2 = sharedPreferences.getString("resource2", "");
         sendPredictionsRequest(resource2);
+
+//        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_refresh_layout);
+//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("DynamicDialer", Context.MODE_PRIVATE);
+//                String resource2 = sharedPreferences.getString("resource2", "");
+//                sendPredictionsRequest(resource2);
+//
+//                getLoaderManager().initLoader(MainActivity.URL_LOADER, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+//                    @Override
+//                    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//                        switch (id) {
+//                            case URL_LOADER:
+//                                // Returns a new CursorLoader
+//                                return new CursorLoader(
+//                                        getContext(),   // Parent activity context
+//                                        CallLog.Calls.CONTENT_URI,        // Table to query
+//                                        null,     // Projection to return
+//                                        null,            // No selection clause
+//                                        null,            // No selection arguments
+//                                        null             // Default sort order
+//                                );
+//                            default:
+//                                return null;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//                        int name = data.getColumnIndex(CallLog.Calls.CACHED_NAME);
+//                        int number = data.getColumnIndex(CallLog.Calls.NUMBER);
+//                        int type = data.getColumnIndex(CallLog.Calls.TYPE);
+//                        int date = data.getColumnIndex(CallLog.Calls.DATE);
+//                        int duration = data.getColumnIndex(CallLog.Calls.DURATION);
+//                        StringBuilder sb = new StringBuilder();
+//
+//                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                        sb.append("{\"name\":\"" + df.format(Calendar.getInstance().getTime()) + "\",\"data\":\"ID,Name,Number,Weekday,Hour Of the Day\\n");
+//
+//                        while (data.moveToNext()) {
+//                            String contactName = data.getString(name);
+//                            String phNumber = data.getString(number);
+//                            String callType = data.getString(type);
+//                            String callDate = data.getString(date);
+//                            Date callDayTime = new Date(Long.valueOf(callDate));
+//                            String callDuration = data.getString(duration);
+//                            String dir = null;
+//
+//                            SimpleDateFormat hourDateFormat = new SimpleDateFormat("HH");
+//                            String time = hourDateFormat.format(callDayTime);
+//                            String dayOfTheWeek = (String) DateFormat.format("EEEE", callDayTime);
+//                            int day = 0;
+//
+//                            switch (dayOfTheWeek) {
+//                                case "Sunday":
+//                                    day = 1;
+//                                    break;
+//                                case "Monday":
+//                                    day = 2;
+//                                    break;
+//                                case "Tuesday":
+//                                    day = 3;
+//                                    break;
+//                                case "Wednesday":
+//                                    day = 4;
+//                                    break;
+//                                case "Thursday":
+//                                    day = 5;
+//                                    break;
+//                                case "Friday":
+//                                    day = 6;
+//                                    break;
+//                                case "Saturday":
+//                                    day = 7;
+//                                    break;
+//                            }
+//
+//
+//                            int callTypeCode = Integer.parseInt(callType);
+//                            switch (callTypeCode) {
+//                                case CallLog.Calls.OUTGOING_TYPE:
+//                                    dir = "Outgoing";
+//                                    break;
+//
+//                                case CallLog.Calls.INCOMING_TYPE:
+//                                    dir = "Incoming";
+//                                    break;
+//
+//                                case CallLog.Calls.MISSED_TYPE:
+//                                    dir = "Missed";
+//                                    break;
+//                            }
+//                            sb.append(getContactIDFromNumber(phNumber, getContext()) + "," + contactName + "," + phNumber + "," + day + "," + time + "\\n");
+//                        }
+//                        data.close();
+//                        sb.append("\"}");
+//
+//                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("DynamicDialer", Context.MODE_PRIVATE);
+//                        MainActivity.sendLogs(sb.toString(), sharedPreferences);
+//                    }
+//
+//                    @Override
+//                    public void onLoaderReset(Loader<Cursor> loader) {
+//
+//                    }
+//                });
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
     }
 
     @Override
