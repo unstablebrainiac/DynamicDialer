@@ -70,16 +70,16 @@ public class PredictionsAdapter extends RecyclerView.Adapter<PredictionsAdapter.
         holder.nameTv.setText(selectedPrediction.getName());
         Bitmap bitmap = openPhoto(selectedPrediction.getContact_id());
         List<String> colorList = new ArrayList<>();
-        colorList.add("#757575");
-        colorList.add("#9C27B0");
-        colorList.add("#EF6C00");
-        colorList.add("#039BE5");
+        colorList.add("#DB4437");
         colorList.add("#009688");
-        colorList.add("#FFA005");
-        colorList.add("#BB83A6");
-        colorList.add("#FFEB3B");
+        colorList.add("#9C27B0");
+        colorList.add("#689F38");
+        colorList.add("#0F9D58");
+        colorList.add("#673AB7");
+        colorList.add("#3F51B5");
+        colorList.add("#EF6C00");
         Random r = new Random();
-        int i = r.nextInt(colorList.size() - 1);
+        int i = r.nextInt(colorList.size());
         holder.photoRl.setBackgroundColor(Color.parseColor(colorList.get(i)));
         if (bitmap != null) {
             BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);

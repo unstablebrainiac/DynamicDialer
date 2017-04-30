@@ -239,6 +239,7 @@ public class PredictionsFragment extends Fragment {
                         .getColumnIndex(ContactsContract.PhoneLookup._ID));
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return contactId.equals("") ? 0 : Long.parseLong(contactId);
     }
 
