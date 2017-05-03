@@ -34,12 +34,87 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final int URL_LOADER = 1;
     private static final int MY_PERMISSIONS_READ_CALL_LOG = 1;
     private static final int MY_PERMISSIONS_READ_CONTACTS = 2;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    public static final int URL_LOADER = 1;
+
+    public static long getContactIDFromNumber(String contactNumber, Context context) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(contactNumber));
+        Cursor cursor = context.getContentResolver().query(uri,
+                new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID},
+                null, null, null);
+
+        String contactId = "";
+
+        if (cursor.moveToFirst()) {
+            do {
+                contactId = cursor.getString(cursor
+                        .getColumnIndex(ContactsContract.PhoneLookup._ID));
+            } while (cursor.moveToNext());
+        }
+        return contactId.equals("") ? 0 : Long.parseLong(contactId);
+    }
+
+    public static void sendLogs(String body, final SharedPreferences sharedPreferences) {
+        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), body);
+        RetrofitInterface retrofitInterface = ServiceGenerator.createService(RetrofitInterface.class);
+        retrofitInterface.sendSource("application/json", "bhavesh2109", "b5265ab5defd322e797052263c4f04e1bcb53d42", requestBody).enqueue(new Callback<GsonModels.BigMLSourceResponse>() {
+            @Override
+            public void onResponse(Call<GsonModels.BigMLSourceResponse> call, Response<GsonModels.BigMLSourceResponse> response) {
+                if (response.isSuccessful()) {
+                    GsonModels.BigMLSourceResponse bigMLSourceResponse = response.body();
+                    String resource = bigMLSourceResponse.getResource();
+                    String body1 = "{\"source\": \"" + resource + "\"}";
+                    RequestBody requestBody1 = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), body1);
+                    RetrofitInterface retrofitInterface1 = ServiceGenerator.createService(RetrofitInterface.class);
+                    retrofitInterface1.sendDataset("application/json", "bhavesh2109", "b5265ab5defd322e797052263c4f04e1bcb53d42", requestBody1).enqueue(new Callback<GsonModels.BigMLDatasetResponse>() {
+                        @Override
+                        public void onResponse(Call<GsonModels.BigMLDatasetResponse> call, Response<GsonModels.BigMLDatasetResponse> response) {
+                            if (response.isSuccessful()) {
+                                GsonModels.BigMLDatasetResponse bigMLDatasetResponse = response.body();
+                                String resource1 = bigMLDatasetResponse.getResource();
+                                android.util.Log.d("TAG", "onResponse: " + resource1);
+                                String body2 = "{\"dataset\":\"" + resource1 + "\",\"objective_field\":\"000002\"}";
+                                RequestBody requestBody2 = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), body2);
+                                RetrofitInterface retrofitInterface2 = ServiceGenerator.createService(RetrofitInterface.class);
+                                retrofitInterface2.sendModel("application/json", "bhavesh2109", "b5265ab5defd322e797052263c4f04e1bcb53d42", requestBody2).enqueue(new Callback<GsonModels.BigMLModelResponse>() {
+                                    @Override
+                                    public void onResponse(Call<GsonModels.BigMLModelResponse> call, Response<GsonModels.BigMLModelResponse> response) {
+                                        if (response.isSuccessful()) {
+                                            GsonModels.BigMLModelResponse bigMLModelResponse = response.body();
+                                            String resource2 = bigMLModelResponse.getResource();
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString("resource2", resource2);
+                                            editor.apply();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<GsonModels.BigMLModelResponse> call, Throwable t) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<GsonModels.BigMLDatasetResponse> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GsonModels.BigMLSourceResponse> call, Throwable t) {
+
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,83 +267,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         sendLogs(sb.toString(), sharedPreferences);
     }
 
-    public static long getContactIDFromNumber(String contactNumber, Context context) {
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
-                Uri.encode(contactNumber));
-        Cursor cursor = context.getContentResolver().query(uri,
-                new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID },
-                null, null, null);
-
-        String contactId = "";
-
-        if (cursor.moveToFirst()) {
-            do {
-                contactId = cursor.getString(cursor
-                        .getColumnIndex(ContactsContract.PhoneLookup._ID));
-            } while (cursor.moveToNext());
-        }
-        return contactId.equals("") ? 0 : Long.parseLong(contactId);
-    }
-
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
 
-    }
-
-    public static void sendLogs(String body, final SharedPreferences sharedPreferences) {
-        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), body);
-        RetrofitInterface retrofitInterface = ServiceGenerator.createService(RetrofitInterface.class);
-        retrofitInterface.sendSource("application/json", "bhavesh2109", "b5265ab5defd322e797052263c4f04e1bcb53d42", requestBody).enqueue(new Callback<GsonModels.BigMLSourceResponse>() {
-            @Override
-            public void onResponse(Call<GsonModels.BigMLSourceResponse> call, Response<GsonModels.BigMLSourceResponse> response) {
-                if (response.isSuccessful()) {
-                    GsonModels.BigMLSourceResponse bigMLSourceResponse = response.body();
-                    String resource = bigMLSourceResponse.getResource();
-                    String body1 = "{\"source\": \"" + resource + "\"}";
-                    RequestBody requestBody1 = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), body1);
-                    RetrofitInterface retrofitInterface1 = ServiceGenerator.createService(RetrofitInterface.class);
-                    retrofitInterface1.sendDataset("application/json", "bhavesh2109", "b5265ab5defd322e797052263c4f04e1bcb53d42", requestBody1).enqueue(new Callback<GsonModels.BigMLDatasetResponse>() {
-                        @Override
-                        public void onResponse(Call<GsonModels.BigMLDatasetResponse> call, Response<GsonModels.BigMLDatasetResponse> response) {
-                            if (response.isSuccessful()) {
-                                GsonModels.BigMLDatasetResponse bigMLDatasetResponse = response.body();
-                                String resource1 = bigMLDatasetResponse.getResource();
-                                android.util.Log.d("TAG", "onResponse: " + resource1);
-                                String body2 = "{\"dataset\":\"" + resource1 + "\",\"objective_field\":\"000002\"}";
-                                RequestBody requestBody2 = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), body2);
-                                RetrofitInterface retrofitInterface2 = ServiceGenerator.createService(RetrofitInterface.class);
-                                retrofitInterface2.sendModel("application/json", "bhavesh2109", "b5265ab5defd322e797052263c4f04e1bcb53d42", requestBody2).enqueue(new Callback<GsonModels.BigMLModelResponse>() {
-                                    @Override
-                                    public void onResponse(Call<GsonModels.BigMLModelResponse> call, Response<GsonModels.BigMLModelResponse> response) {
-                                        if (response.isSuccessful()) {
-                                            GsonModels.BigMLModelResponse bigMLModelResponse = response.body();
-                                            String resource2 = bigMLModelResponse.getResource();
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            editor.putString("resource2", resource2);
-                                            editor.apply();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<GsonModels.BigMLModelResponse> call, Throwable t) {
-
-                                    }
-                                });
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<GsonModels.BigMLDatasetResponse> call, Throwable t) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GsonModels.BigMLSourceResponse> call, Throwable t) {
-
-            }
-        });
     }
 }
