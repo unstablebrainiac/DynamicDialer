@@ -1,12 +1,10 @@
 package com.tobedecided.dynamicdialer;
 
-import android.Manifest;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,13 +12,11 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import java.text.SimpleDateFormat;
@@ -35,8 +31,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final int URL_LOADER = 1;
-    private static final int MY_PERMISSIONS_READ_CALL_LOG = 1;
-    private static final int MY_PERMISSIONS_READ_CONTACTS = 2;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -50,12 +44,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         String contactId = "";
 
+        assert cursor != null;
         if (cursor.moveToFirst()) {
             do {
                 contactId = cursor.getString(cursor
                         .getColumnIndex(ContactsContract.PhoneLookup._ID));
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return contactId.equals("") ? 0 : Long.parseLong(contactId);
     }
 
@@ -137,12 +133,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(intent);
             }
         });
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG}, MY_PERMISSIONS_READ_CALL_LOG);
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_READ_CONTACTS);
-        }
         getLoaderManager().initLoader(URL_LOADER, null, MainActivity.this);
     }
 
@@ -158,21 +148,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
