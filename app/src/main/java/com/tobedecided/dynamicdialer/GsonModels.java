@@ -1,5 +1,6 @@
 package com.tobedecided.dynamicdialer;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -241,6 +242,56 @@ public class GsonModels {
         @SerializedName("updated")
         @Expose
         private String updated;
+
+        public BigMLPredictionsResponse(String json) {
+            Gson gson = new Gson();
+            BigMLPredictionsResponse bigMLPredictionsResponse = gson.fromJson(json, BigMLPredictionsResponse.class);
+            if (bigMLPredictionsResponse == null)
+                return;
+            this.boostedEnsemble = bigMLPredictionsResponse.boostedEnsemble;
+            this.category = bigMLPredictionsResponse.category;
+            this.code = bigMLPredictionsResponse.code;
+            this.confidence = bigMLPredictionsResponse.confidence;
+            this.configuration = bigMLPredictionsResponse.configuration;
+            this.configurationStatus = bigMLPredictionsResponse.configurationStatus;
+            this.created = bigMLPredictionsResponse.created;
+            this.credits = bigMLPredictionsResponse.credits;
+            this.dataset = bigMLPredictionsResponse.dataset;
+            this.datasetStatus = bigMLPredictionsResponse.datasetStatus;
+            this.description = bigMLPredictionsResponse.description;
+            this.dev = bigMLPredictionsResponse.dev;
+            this.fields = bigMLPredictionsResponse.fields;
+            this.importance = bigMLPredictionsResponse.importance;
+            this.inputData = bigMLPredictionsResponse.inputData;
+            this.locale = bigMLPredictionsResponse.locale;
+            this.missingStrategy = bigMLPredictionsResponse.missingStrategy;
+            this.model = bigMLPredictionsResponse.model;
+            this.modelStatus = bigMLPredictionsResponse.modelStatus;
+            this.modelType = bigMLPredictionsResponse.modelType;
+            this.name = bigMLPredictionsResponse.name;
+            this.numberOfModels = bigMLPredictionsResponse.numberOfModels;
+            this.objectiveField = bigMLPredictionsResponse.objectiveField;
+            this.objectiveFieldName = bigMLPredictionsResponse.objectiveFieldName;
+            this.objectiveFields = bigMLPredictionsResponse.objectiveFields;
+            this.output = bigMLPredictionsResponse.output;
+            this.prediction = bigMLPredictionsResponse.prediction;
+            this.predictionPath = bigMLPredictionsResponse.predictionPath;
+            this._private = bigMLPredictionsResponse._private;
+            this.probabilities = bigMLPredictionsResponse.probabilities;
+            this.probability = bigMLPredictionsResponse.probability;
+            this.project = bigMLPredictionsResponse.project;
+            this.queryString = bigMLPredictionsResponse.queryString;
+            this.resource = bigMLPredictionsResponse.resource;
+            this.shared = bigMLPredictionsResponse.shared;
+            this.source = bigMLPredictionsResponse.source;
+            this.sourceStatus = bigMLPredictionsResponse.sourceStatus;
+            this.status = bigMLPredictionsResponse.status;
+            this.subscription = bigMLPredictionsResponse.subscription;
+            this.tags = bigMLPredictionsResponse.tags;
+            this.task = bigMLPredictionsResponse.task;
+            this.tlp = bigMLPredictionsResponse.tlp;
+            this.updated = bigMLPredictionsResponse.updated;
+        }
 
         public BigMLPredictionsResponse(Boolean boostedEnsemble, Integer category, Integer code, Double confidence, Object configuration, Boolean configurationStatus, String created, Double credits, String dataset, Boolean datasetStatus, String description, Boolean dev, Fields fields, Importance importance, InputData inputData, String locale, Integer missingStrategy, String model, Boolean modelStatus, Integer modelType, String name, Integer numberOfModels, String objectiveField, String objectiveFieldName, List<String> objectiveFields, String output, Prediction prediction, PredictionPath predictionPath, Boolean _private, List<List<String>> probabilities, Double probability, Object project, String queryString, String resource, Boolean shared, String source, Boolean sourceStatus, Status status, Boolean subscription, List<Object> tags, String task, Integer tlp, String updated) {
             this.boostedEnsemble = boostedEnsemble;
@@ -630,6 +681,12 @@ public class GsonModels {
 
         public void setUpdated(String updated) {
             this.updated = updated;
+        }
+
+        @Override
+        public String toString() {
+            Gson gson = new Gson();
+            return gson.toJson(this);
         }
     }
 

@@ -78,6 +78,10 @@ public class PredictionsAdapter extends RecyclerView.Adapter<PredictionsAdapter.
         colorList.add("#673AB7");
         colorList.add("#3F51B5");
         colorList.add("#EF6C00");
+        colorList.add("#0097A3");
+        colorList.add("#747474");
+        colorList.add("#009AE2");
+        colorList.add("#0B9D54");
         Random r = new Random();
         int i = r.nextInt(colorList.size());
         holder.photoRl.setBackgroundColor(Color.parseColor(colorList.get(i)));
