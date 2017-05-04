@@ -17,8 +17,9 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".DialpadActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".DialpadActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">

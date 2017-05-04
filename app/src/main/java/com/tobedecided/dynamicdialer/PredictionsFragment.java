@@ -2,7 +2,6 @@ package com.tobedecided.dynamicdialer;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +15,6 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -49,7 +47,6 @@ import static com.tobedecided.dynamicdialer.MainActivity.URL_LOADER;
  */
 public class PredictionsFragment extends Fragment {
 
-    private static final int MY_PERMISSIONS_READ_CONTACTS = 5;
     private List<Prediction> predictionList;
     private RecyclerView predictionsRecyclerView;
     private PredictionsAdapter predictionsAdapter;
@@ -79,9 +76,6 @@ public class PredictionsFragment extends Fragment {
     }
 
     public static String getContactName(Context context, String phoneNumber) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_READ_CONTACTS);
-        }
         ContentResolver cr = context.getContentResolver();
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
         String projection[] = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID};
