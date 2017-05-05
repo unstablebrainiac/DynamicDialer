@@ -6,4 +6,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="call">Call</string>
     <string name="action_refresh">Refresh</string>
+    <string name="action_privacy">Privacy Policy</string>
+    <string name="action_about">About Us</string>
+    <string name="about_us">This app was made as part of the code.fun.do hackathon conducted by Microsoft in 2016 by Team To Be Decided</string>
 </resources>
