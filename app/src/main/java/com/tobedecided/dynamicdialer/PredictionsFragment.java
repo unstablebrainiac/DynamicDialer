@@ -31,7 +31,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -131,7 +133,7 @@ public class PredictionsFragment extends Fragment {
                             case URL_LOADER:
                                 // Returns a new CursorLoader
                                 return new CursorLoader(
-                                        getContext(),   // Parent activity context
+                                        getActivity(),   // Parent activity context
                                         CallLog.Calls.CONTENT_URI,        // Table to query
                                         null,     // Projection to return
                                         null,            // No selection clause
@@ -143,8 +145,13 @@ public class PredictionsFragment extends Fragment {
                         }
                     }
 
+
                     @Override
                     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+                        if (data.isClosed()) {
+                            onStart();
+                            return;
+                        }
                         int name = data.getColumnIndex(CallLog.Calls.CACHED_NAME);
                         int number = data.getColumnIndex(CallLog.Calls.NUMBER);
                         int type = data.getColumnIndex(CallLog.Calls.TYPE);
@@ -214,7 +221,8 @@ public class PredictionsFragment extends Fragment {
                         sb.append("\"}");
 
                         SharedPreferences sharedPreferences = getContext().getSharedPreferences("DynamicDialer", Context.MODE_PRIVATE);
-                        MainActivity.sendLogs(sb.toString(), sharedPreferences);
+                        ((MainActivity)getActivity()).sendLogs(sb.toString(), sharedPreferences);
+                        ((MainActivity)getActivity()).progressDialog.dismiss();
                     }
 
                     @Override
@@ -279,9 +287,15 @@ public class PredictionsFragment extends Fragment {
         if (probabilities == null)
             return;
         predictionList = new ArrayList<>();
+        Map<String, Boolean> map = new HashMap<String, Boolean>();
         for (int i = 0; i < probabilities.size(); i++) {
-            if (!(getContactName(getContext(), probabilities.get(i).get(0)) == null) && !getContactName(getContext(), probabilities.get(i).get(0)).isEmpty())
-                predictionList.add(new Prediction(getContactIDFromNumber(probabilities.get(i).get(1), getContext()), getContactName(getContext(), probabilities.get(i).get(0)), probabilities.get(i).get(0), Double.parseDouble(probabilities.get(i).get(1))));
+            if (!(getContactName(getContext(), probabilities.get(i).get(0)) == null) && !getContactName(getContext(), probabilities.get(i).get(0)).isEmpty()) {
+                String contactNumber = probabilities.get(i).get(0);
+                if(!map.containsKey(contactNumber)) {
+                    map.put(contactNumber, true);
+                    predictionList.add(new Prediction(getContactIDFromNumber(probabilities.get(i).get(1), getContext()), getContactName(getContext(), probabilities.get(i).get(0)), probabilities.get(i).get(0), Double.parseDouble(probabilities.get(i).get(1))));
+                }
+            }
         }
         Collections.sort(predictionList, Prediction.Comparators.PROBABILITY);
         predictionsAdapter = new PredictionsAdapter(predictionList, getActivity(), new ItemClickListener() {

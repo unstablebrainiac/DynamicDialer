@@ -1,6 +1,7 @@
 package com.tobedecided.dynamicdialer;
 
 import android.app.LoaderManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -35,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private boolean firstLaunch;
+    public ProgressDialog progressDialog;
+
 
     public static long getContactIDFromNumber(String contactNumber, Context context) {
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return contactId.equals("") ? 0 : Long.parseLong(contactId);
     }
 
-    public static void sendLogs(String body, final SharedPreferences sharedPreferences) {
+    public void sendLogs(String body, final SharedPreferences sharedPreferences) {
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), body);
         RetrofitInterface retrofitInterface = ServiceGenerator.createService(RetrofitInterface.class);
         retrofitInterface.sendSource("application/json", "bhavesh2109", "b5265ab5defd322e797052263c4f04e1bcb53d42", requestBody).enqueue(new Callback<GsonModels.BigMLSourceResponse>() {
@@ -87,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
                                             editor.putString("resource2", resource2);
                                             editor.apply();
+
+                                            progressDialog.setMessage("Training your machine learning model...\nThis may take a few minutes during the first launch.");
                                         }
                                     }
 
@@ -135,6 +141,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
         getLoaderManager().initLoader(URL_LOADER, null, MainActivity.this);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("DynamicDialer", Context.MODE_PRIVATE);
+        firstLaunch = sharedPreferences.getBoolean("FirstLaunch", true);
+
+        progressDialog = new ProgressDialog(this, R.style.AppCompatAlertDialogStyle);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Fetching Logs...");
+        progressDialog.setCancelable(false);
+
+        if (firstLaunch) {
+            progressDialog.show();
+            SharedPreferences.Editor editor = getSharedPreferences("DynamicDialer", Context.MODE_PRIVATE).edit();
+            editor.putBoolean("FirstLaunch", false);
+            editor.apply();
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -144,33 +165,33 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         viewPager.setAdapter(adapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_about) {
-            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (id == R.id.action_privacy) {
-            Intent intent = new Intent(MainActivity.this, PrivacyActivity.class);
-            startActivity(intent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_about) {
+//            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+//            startActivity(intent);
+//            return true;
+//        } else if (id == R.id.action_privacy) {
+//            Intent intent = new Intent(MainActivity.this, PrivacyActivity.class);
+//            startActivity(intent);
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
